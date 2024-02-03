@@ -1,79 +1,73 @@
-﻿using TikTakToe;
+﻿using System;
+using TicTac2;
 
-support_class sc =  new support_class();
-
-//variables
-int player_1 = 0;
-
-//welcome the user to the game
-Console.WriteLine("Welcome to Tic-Tac-Toe!");
-
-// array for choices
-int [] board = new int[9];
-for (int i = 0; i < 9; i++)
-{ 
-    board[i] = i + 1; 
-}
-
-//print board
-Console.WriteLine("Current board: ");
-sc.printBoard();
-bool winner = false;
-while (winner == false) {
-    while (true)
-    {
-        Console.WriteLine("Player 1's Turn. Select a number");
-        string input = Console.ReadLine();
-
-        if (int.TryParse(input, out player_1) && player_1 >= 1 && player_1 <= 9)
-        {
-            break;
-        }
-
-        Console.WriteLine("Invalid input. Please enter a valid available position.")
-
-    }
-
-    for (int i = 0; i < 9; i++)
-    {
-        if (board[i] == player_1)
-        {
-            board[i] = 'X';
-        }
-    }
-    //check for winners
-    sc.checkWinner();
-    Console.WriteLine("Board: ");
-    sc.printBoard();
-
-    while (true)
-    {
-        Console.WriteLine("Player 2's Turn. Select a number");
-        string input = Console.ReadLine();
-
-        if (int.TryParse(input, out player_1) && player_1 >= 1 && player_1 <= 9)
-        {
-            break;
-        }
-
-        Console.WriteLine("Invalid input. Please enter a valid available position.")
-
-    }
-
-    for (int i = 0; i < 9; i++)
-    {
-        if (board[i] == player_1)
-        {
-            board[i] = 'O';
-        }
-    }
-    sc.checkWinner();
-    Console.WriteLine("Board: ");
-    sc.printBoard();
-}
-
-//End the game and announce winner
-if (winner)
+//Tristan McLaughlin, Sara Olivera, Annelise Anderson, Seth Alley
+//This is a tic tac toe program
+class Driver
 {
-    Console.WriteLine("Game Over!");
+    static Support_Class sc = new Support_Class();
+
+    static void Main(string[] args)
+    {
+        char[,] board = new char[3, 3]; // game board array
+        char currentPlayer = 'X'; // indicates current player: X or O
+        bool gameEnded = false;
+
+        Console.WriteLine("Welcome to Tic-Tac-Toe!");
+        Console.WriteLine("Enter a number for where you would like to place your piece");
+        Console.WriteLine("  1|2|3\n  -----\n  4|5|6\n  -----\n  7|8|9");
+
+        // Initialize board
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                board[i, j] = ' ';
+            }
+        }
+
+        while (!gameEnded)
+        {
+            Console.WriteLine("Player " + currentPlayer + ", enter your move (1-9):");
+            if (!int.TryParse(Console.ReadLine(), out int move) || move < 1 || move > 9 || !PlaceMove(board, move, currentPlayer))
+            {
+                Console.WriteLine("Invalid move. Please try again.");
+                continue;
+            }
+
+            sc.PrintBoard(board);
+
+            char winner = Support_Class.CheckWinner(board);
+            if (winner != ' ')
+            {
+                if (winner == 'T')
+                {
+                    Console.WriteLine("It's a tie!");
+                }
+                else
+                {
+                    Console.WriteLine("Player " + winner + " wins!");
+                }
+                gameEnded = true;
+            }
+            else
+            {
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+            }
+        }
+    }
+
+    static bool PlaceMove(char[,] board, int move, char currentPlayer)
+    {
+        int row = (move - 1) / 3;
+        int col = (move - 1) % 3;
+
+        if (board[row, col] == ' ')
+        {
+            board[row, col] = currentPlayer;
+            return true;
+        }
+
+        return false;
+    }
 }
